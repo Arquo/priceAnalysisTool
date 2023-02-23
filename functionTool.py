@@ -12,8 +12,8 @@ def modify_df(df, start, end):
 
 def get_return_data(price_data):
     df = pd.DataFrame(price_data)
-    df_price = df.loc[:,"Open":"Adjusted Close"]
-    df_others = df.loc[:,"Volume":"Dividend Amount"]
+    df_price = df.iloc[:,0:5]
+    df_others = df.iloc[:,5:7]
     df_change = df_price.pct_change()
     df_merged = pd.merge(df_change, df_others, on = "date")
     return df_merged.iloc[1:,:]
@@ -37,7 +37,7 @@ def find_annual_return(price_data, freq):
     return annualized_return
 
 def find_annual_vol(price_data, freq):
-    df_change = (price_data).pct_change().loc[:,"Adjusted Close"]
+    df_change = (price_data).pct_change().iloc[:,4]
     data_change_std = np.std(df_change)
     annualized_std = 0
     if(freq == "weekly"):
@@ -98,3 +98,8 @@ def requestComm(symbol, start, end, frequence, api):
     df = dictionary["data"]
     df = pd.DataFrame(df)
     return modify_df(df.set_index("date"), start, end)
+
+
+def find_stat(symbol):
+    if(type(symbol) == ss.Equity):
+        print("yes")
